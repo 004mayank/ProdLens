@@ -1,73 +1,129 @@
-# ProdLens (Web)
+# ProdLens — Product Management Suite (local-first)
 
-ProdLens is an **AI-powered product intelligence tool** that runs **entirely in the browser**.
+ProdLens is a **stateful, production-minded PM workspace**.
 
-Users:
-1) paste their **OpenAI API key** (stored locally in `localStorage`)
-2) enter a **product name** (e.g., Instagram)
-3) click **Analyze**
-4) get a structured PM-style report:
+Instead of dumping static AI text, it maintains a structured project state you can **edit and evolve**:
 
-- 📌 Overview
-- 🧩 Features
-- ⚔️ Competitors
-- 📉 SWOT
-- 💡 Strategy *(most important)*
-- 🚀 What to Build
+- Product
+- Users
+- Systems
+- Features
+- Metrics
+- Flows
+- Competition
+- Strategy *(most important)*
+- Experiments
+- Roadmap (with **RICE** prioritization)
 
-> No backend. No server actions. No hardcoded keys.
+It’s designed to feel like a real PM tool (Notion/Linear vibe), but stays simple and local-first.
 
 ---
 
-## Tech stack
+## What’s inside
+
+### 1) Projects dashboard
+- Create multiple projects
+- Open a project workspace
+- Delete projects
+
+### 2) Structured state (critical)
+All UI reads/writes from a typed workspace schema:
+
+```ts
+// lib/schema.ts
+{
+  product: {},
+  problem_space: {},
+  users: [],
+  systems: [],
+  features: [],
+  metrics: {},
+  flows: [],
+  loops: [],
+  competitors: [],
+  strategy: {},
+  experiments: [],
+  roadmap: []
+}
+```
+
+Persistence is **localStorage** (v1) via `lib/storage.ts`.
+
+### 3) AI generation layer (server route)
+- Master prompt produces structured JSON
+- Supports modes:
+  - Generate
+  - Critique
+  - Improve Strategy
+  - Suggest Roadmap
+- Supports partial regeneration:
+  - Full workspace
+  - Strategy only
+  - Roadmap only
+
+Route:
+- `POST /api/ai/generate` (expects `{ apiKey, productName, mode, scope, current }`)
+
+> Important: API key is **user-provided** and is **not** stored on the server. It’s sent per-request.
+
+### 4) Editable UI
+- Inline edits (blur-to-save)
+- Add/remove list items
+- Experiments CRUD
+- Roadmap CRUD + RICE scoring (auto priority)
+
+---
+
+## Tech
 
 - Next.js (App Router)
 - React + TypeScript
-- Tailwind CSS
-- OpenAI via `fetch` (Responses API)
+- TailwindCSS
+- Zod (schema validation)
+- OpenAI Responses API
+
+---
+
+## Routes
+
+- `/dashboard` — Projects list + create
+- `/project/[id]` — Stateful PM workspace
+- `/analyze` — One-off analysis (legacy-style)
 
 ---
 
 ## Local setup
 
-### 1) Install deps
-
 ```bash
 npm install
-```
-
-### 2) Run dev server
-
-```bash
 npm run dev
 ```
 
-Open: http://localhost:3000
+Open:
+- http://localhost:3000/dashboard
 
 ---
 
-## Where the logic lives
+## Key files
 
+- Schema:
+  - `lib/schema.ts`
+- Persistence:
+  - `lib/storage.ts`
+  - `components/ProjectsProvider.tsx`
+- AI:
+  - `lib/ai/prompts.ts`
+  - `app/api/ai/generate/route.ts`
 - UI:
-  - `app/page.tsx`
-  - `app/components/InputForm.tsx`
-  - `app/components/ResultTabs.tsx`
-- OpenAI call + JSON parsing:
-  - `lib/openai.ts`
-
----
-
-## Notes
-
-- Your API key is stored in the browser under: `prodlens.openaiKey`
-- If output JSON occasionally fails, the app attempts to extract the first JSON object from the model response.
-- Model can be changed in `lib/openai.ts`.
+  - `app/dashboard/page.tsx`
+  - `app/project/[id]/page.tsx`
+  - `components/editable/*`
+  - `components/workspace/*`
 
 ---
 
 ## Legacy
 
-The previous local-Ollama Python prototype was moved to:
-- `legacy_python_app/`
-- `legacy_main.py`
-- `legacy_requirements.txt`
+Older prototypes are preserved:
+- Ollama/Python prototype: `legacy_python_app/`, `legacy_main.py`
+- Single-page analysis: `/analyze`
