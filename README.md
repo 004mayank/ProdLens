@@ -1,118 +1,159 @@
 # ProdLens
 
-**AI Product Intelligence Agent**
-Turn any product into insights, strategy, and execution plans.
+**ProdLens** is a **production-minded, local-first AI Product Intelligence Agent**.
+
+- Input: product name (e.g., `Instagram`)
+- Output (terminal report):
+  - 📌 Product overview
+  - 🧩 Features
+  - ⚔️ Competitors
+  - 📉 SWOT
+  - 💡 Strategic insights *(most important)*
+  - 🚀 Suggested features *(what to build next)*
+
+This is designed to feel like a **real PM tool**, not a chatbot.
 
 ---
 
-## Overview
+## Why local-first?
 
-ProdLens is an agentic AI system that analyzes products and generates:
-
-* PRDs (Product Requirement Docs)
-* Feature breakdowns
-* Competitor analysis
-* Market insights
-* Strategic recommendations
-
-Built for **Product Managers, Founders, and Builders**.
+- Runs fully locally using **Ollama**
+- Uses a small **Python** backend
+- No OpenAI dependency
 
 ---
 
-## How It Works
+## Architecture (multi-agent)
 
-Input a product name:
+`main.py` → `Orchestrator` → agents:
+
+1. **Research Agent**: gathers raw notes (mock data + optional light scraping)
+2. **Analysis Agent**: extracts structured understanding (features, users, positioning)
+3. **Competitor Agent**: identifies competitors + comparisons
+4. **Strategy Agent (MOST IMPORTANT)**: opportunities + what-to-build-next
+
+Bonus:
+- **Memory**: local ChromaDB store of past reports
+
+---
+
+## Project structure
+
+```
+prodlens/
+│
+├── app/
+│   ├── agents/
+│   │   ├── research_agent.py
+│   │   ├── analysis_agent.py
+│   │   ├── competitor_agent.py
+│   │   └── strategy_agent.py
+│   │
+│   ├── core/
+│   │   ├── orchestrator.py
+│   │   ├── config.py
+│   │   └── prompts.py
+│   │
+│   ├── llm/
+│   │   └── ollama_client.py
+│   │
+│   ├── memory/
+│   │   └── vector_store.py
+│   │
+│   ├── tools/
+│   │   ├── search.py
+│   │   └── scraper.py
+│
+├── main.py
+├── requirements.txt
+└── README.md
+```
+
+---
+
+## Setup
+
+### 1) Install Ollama
+
+- macOS: `brew install ollama`
+- Or download: https://ollama.com
+
+Start it:
 
 ```bash
+ollama serve
+```
+
+### 2) Pull a local model
+
+Recommended default:
+
+```bash
+ollama pull llama3
+```
+
+Alternative:
+
+```bash
+ollama pull mistral
+```
+
+### 3) Create a virtualenv + install deps
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+> Note on memory: ChromaDB uses embeddings via `sentence-transformers`, which may download a small embedding model on first run.
+
+---
+
+## Run
+
+```bash
+python main.py "Instagram"
+```
+
+Choose model:
+
+```bash
+python main.py "Instagram" --model mistral
+```
+
+---
+
+## Example output (short)
+
+```
+ProdLens Report
 Instagram
-```
 
-ProdLens will:
+📌 Product Overview
+...
 
-1. Research the product
-2. Analyze features & positioning
-3. Identify competitors
-4. Generate strategic insights
-5. Output structured PRD
+🧩 Features
+...
 
----
+⚔️ Competitors
+...
 
-## Core Idea
+📉 SWOT
+...
 
-This is not just an AI summarizer.
+💡 Strategic Insights
+...
 
-ProdLens answers:
-
-> “Given this product, what should I build?”
-
----
-
-## Architecture
-
-```text
-User Input
-   ↓
-Orchestrator (LangGraph)
-   ↓
---------------------------------
-| Research Agent               |
-| Analysis Agent               |
-| Competitor Agent             |
-| Strategy Agent               |
---------------------------------
-   ↓
-Structured Output (Insights + PRD)
+🚀 Suggested Features
+...
 ```
 
 ---
 
-## Tech Stack
+## Notes / Next improvements
 
-* LLM: OpenAI GPT / Claude
-* Agents: LangGraph / CrewAI
-* Backend: FastAPI (Python)
-* Vector DB: ChromaDB
-* Search: Tavily / SerpAPI
-* Frontend: Next.js / Streamlit
-
----
-
-## Example Output
-
-For input: **Instagram**
-
-* Product Overview
-* Core Features (Feed, Stories, Reels)
-* Competitor Comparison (TikTok, Snapchat)
-* SWOT Analysis
-* Strategic Opportunities
-* Suggested Features
-
----
-
-## Roadmap
-
-* [ ] MVP: Product summary + competitors
-* [ ] PRD generation
-* [ ] Multi-agent system
-* [ ] Strategy engine (core differentiator)
-* [ ] UI dashboard
-* [ ] Memory + saved insights
-
----
-
-## Vision
-
-To become the **default AI tool for product thinking**.
-
----
-
-## Contributing
-
-Open to contributions, ideas, and feedback.
-
----
-
-## Support
-
-If you find this useful, consider starring the repo ⭐
+- Replace `SearchTool` with a real local knowledge base or self-hosted search (SearxNG)
+- Add better source citation handling
+- Add caching + structured persistence (SQLite)
+- Add an interactive TUI
