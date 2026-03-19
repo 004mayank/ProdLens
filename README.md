@@ -1,159 +1,73 @@
-# ProdLens
+# ProdLens (Web)
 
-**ProdLens** is a **production-minded, local-first AI Product Intelligence Agent**.
+ProdLens is an **AI-powered product intelligence tool** that runs **entirely in the browser**.
 
-- Input: product name (e.g., `Instagram`)
-- Output (terminal report):
-  - 📌 Product overview
-  - 🧩 Features
-  - ⚔️ Competitors
-  - 📉 SWOT
-  - 💡 Strategic insights *(most important)*
-  - 🚀 Suggested features *(what to build next)*
+Users:
+1) paste their **OpenAI API key** (stored locally in `localStorage`)
+2) enter a **product name** (e.g., Instagram)
+3) click **Analyze**
+4) get a structured PM-style report:
 
-This is designed to feel like a **real PM tool**, not a chatbot.
+- 📌 Overview
+- 🧩 Features
+- ⚔️ Competitors
+- 📉 SWOT
+- 💡 Strategy *(most important)*
+- 🚀 What to Build
 
----
-
-## Why local-first?
-
-- Runs fully locally using **Ollama**
-- Uses a small **Python** backend
-- No OpenAI dependency
+> No backend. No server actions. No hardcoded keys.
 
 ---
 
-## Architecture (multi-agent)
+## Tech stack
 
-`main.py` → `Orchestrator` → agents:
-
-1. **Research Agent**: gathers raw notes (mock data + optional light scraping)
-2. **Analysis Agent**: extracts structured understanding (features, users, positioning)
-3. **Competitor Agent**: identifies competitors + comparisons
-4. **Strategy Agent (MOST IMPORTANT)**: opportunities + what-to-build-next
-
-Bonus:
-- **Memory**: local ChromaDB store of past reports
+- Next.js (App Router)
+- React + TypeScript
+- Tailwind CSS
+- OpenAI via `fetch` (Responses API)
 
 ---
 
-## Project structure
+## Local setup
 
-```
-prodlens/
-│
-├── app/
-│   ├── agents/
-│   │   ├── research_agent.py
-│   │   ├── analysis_agent.py
-│   │   ├── competitor_agent.py
-│   │   └── strategy_agent.py
-│   │
-│   ├── core/
-│   │   ├── orchestrator.py
-│   │   ├── config.py
-│   │   └── prompts.py
-│   │
-│   ├── llm/
-│   │   └── ollama_client.py
-│   │
-│   ├── memory/
-│   │   └── vector_store.py
-│   │
-│   ├── tools/
-│   │   ├── search.py
-│   │   └── scraper.py
-│
-├── main.py
-├── requirements.txt
-└── README.md
-```
-
----
-
-## Setup
-
-### 1) Install Ollama
-
-- macOS: `brew install ollama`
-- Or download: https://ollama.com
-
-Start it:
+### 1) Install deps
 
 ```bash
-ollama serve
+npm install
 ```
 
-### 2) Pull a local model
-
-Recommended default:
+### 2) Run dev server
 
 ```bash
-ollama pull llama3
+npm run dev
 ```
 
-Alternative:
-
-```bash
-ollama pull mistral
-```
-
-### 3) Create a virtualenv + install deps
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r requirements.txt
-```
-
-> Note on memory: ChromaDB uses embeddings via `sentence-transformers`, which may download a small embedding model on first run.
+Open: http://localhost:3000
 
 ---
 
-## Run
+## Where the logic lives
 
-```bash
-python main.py "Instagram"
-```
-
-Choose model:
-
-```bash
-python main.py "Instagram" --model mistral
-```
+- UI:
+  - `app/page.tsx`
+  - `app/components/InputForm.tsx`
+  - `app/components/ResultTabs.tsx`
+- OpenAI call + JSON parsing:
+  - `lib/openai.ts`
 
 ---
 
-## Example output (short)
+## Notes
 
-```
-ProdLens Report
-Instagram
-
-📌 Product Overview
-...
-
-🧩 Features
-...
-
-⚔️ Competitors
-...
-
-📉 SWOT
-...
-
-💡 Strategic Insights
-...
-
-🚀 Suggested Features
-...
-```
+- Your API key is stored in the browser under: `prodlens.openaiKey`
+- If output JSON occasionally fails, the app attempts to extract the first JSON object from the model response.
+- Model can be changed in `lib/openai.ts`.
 
 ---
 
-## Notes / Next improvements
+## Legacy
 
-- Replace `SearchTool` with a real local knowledge base or self-hosted search (SearxNG)
-- Add better source citation handling
-- Add caching + structured persistence (SQLite)
-- Add an interactive TUI
+The previous local-Ollama Python prototype was moved to:
+- `legacy_python_app/`
+- `legacy_main.py`
+- `legacy_requirements.txt`
