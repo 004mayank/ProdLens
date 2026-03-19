@@ -12,7 +12,7 @@ export function ThemeToggle() {
   ];
 
   return (
-    <div className="inline-flex items-center gap-1 rounded-xl border border-zinc-200 bg-white p-1 dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="pl-card inline-flex items-center gap-1 rounded-xl p-1">
       {opts.map((o) => {
         const active = settings.theme === o.v;
         return (

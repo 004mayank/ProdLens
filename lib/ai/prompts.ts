@@ -33,9 +33,15 @@ ${modeGuide[mode]}
 
 ${scopeGuide[scope]}
 
+Depth requirements:
+- product.overview must be in-depth (8-12 sentences) covering: what it is, who it’s for, core value, key surfaces, monetization, and differentiation.
+- product.category and product.business_model must be explicit.
+- problem_space.problems should list real user pains (5-10).
+- problem_space.jobs_to_be_done should be concrete (5-10).
+
 Hard rules:
 - Return STRICT JSON only. No markdown. No backticks. No commentary.
-- Use concise bullet-like strings.
+- Use concise bullet-like strings (except product.overview which should be paragraph-style).
 - Keep recommendations specific and actionable.
 - For roadmap items include: group (now|next|later) and rice {reach, impact, confidence, effort}.
 

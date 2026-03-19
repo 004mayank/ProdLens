@@ -16,7 +16,7 @@ export function EditableStringList({
   const [draft, setDraft] = useState("");
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+    <div className="pl-card rounded-2xl p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
         <div className="text-sm font-semibold text-zinc-900">{title}</div>
         <button
@@ -31,7 +31,7 @@ export function EditableStringList({
       <div className="space-y-2">
         {items.length === 0 ? <div className="text-sm text-zinc-500">No items.</div> : null}
         {items.map((it, idx) => (
-          <div key={idx} className="flex items-start justify-between gap-3 rounded-xl border border-zinc-200 px-3 py-2">
+          <div key={idx} className="flex items-start justify-between gap-3 rounded-xl border px-3 py-2" style={{ borderColor: "var(--border)" }}>
             <div className="text-sm text-zinc-800">{it}</div>
             <button
               type="button"
@@ -49,7 +49,7 @@ export function EditableStringList({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder={placeholder || "Add an item…"}
-          className="w-full flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-sm outline-none placeholder:text-zinc-400 focus:border-zinc-300"
+          className="pl-input w-full flex-1 rounded-xl px-3 py-2 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
         <button
           type="button"

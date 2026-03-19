@@ -25,8 +25,8 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
-      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+    <div className="min-h-dvh">
+      <header className="pl-card sticky top-0 z-10 border-b backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-5">
           <div>
             <div className="text-sm font-semibold text-zinc-900">ProdLens</div>
@@ -45,14 +45,14 @@ export default function DashboardPage() {
         <div className="grid gap-6">
           <ApiKeyCard />
 
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <div className="pl-card rounded-2xl p-5 shadow-sm">
             <div className="text-sm font-semibold text-zinc-900">Create a project</div>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Instagram"
-                className="w-full flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300"
+                className="pl-input w-full flex-1 rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
               />
               <button
                 type="button"
@@ -79,7 +79,7 @@ export default function DashboardPage() {
                 {sorted.map((p) => (
                   <div
                     key={p.id}
-                    className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
+                    className="pl-card flex items-center justify-between gap-4 rounded-2xl p-4 shadow-sm"
                   >
                     <div>
                       <div className="text-sm font-semibold text-zinc-900">{p.workspace.product.name}</div>

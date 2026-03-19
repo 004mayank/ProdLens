@@ -160,23 +160,28 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+    <div className="min-h-dvh">
+      <header className="pl-card sticky top-0 z-10 border-b backdrop-blur">
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between gap-4 px-6 py-4">
+          <div>
+            <div className="text-sm font-semibold">ProdLens</div>
+            <div className="pl-muted text-xs">{ws.product.name}</div>
+          </div>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link href="/dashboard" className="text-xs font-semibold hover:underline">
+              Dashboard
+            </Link>
+          </div>
+        </div>
+      </header>
+
       <div className="flex">
         {/* Sidebar */}
-        <aside className="sticky top-0 h-dvh w-72 shrink-0 border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
-          <div className="border-b border-zinc-200 px-5 py-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-sm font-semibold text-zinc-900">ProdLens</div>
-                <div className="text-xs text-zinc-500">PM workspace</div>
-              </div>
-              <ThemeToggle />
-            </div>
-            <div className="mt-3">
-              <Link href="/dashboard" className="text-xs font-semibold text-zinc-600 hover:text-zinc-900">
-                ← Dashboard
-              </Link>
-            </div>
+        <aside className="pl-card sticky top-0 h-dvh w-72 shrink-0 border-r">
+          <div className="border-b border-zinc-200 px-5 py-5 dark:border-zinc-800">
+            <div className="text-sm font-semibold">Workspace</div>
+            <div className="pl-muted text-xs">Projects + AI controls</div>
           </div>
 
           <div className="px-3 py-3">

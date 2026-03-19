@@ -66,11 +66,11 @@ export function ApiKeyCard() {
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+    <div className="pl-card rounded-2xl p-5 shadow-sm">
       <div className="flex items-start justify-between gap-3">
         <div>
-          <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-50">OpenAI API key</div>
-          <div className="mt-1 text-xs text-zinc-500">
+          <div className="text-sm font-semibold">OpenAI API key</div>
+          <div className="pl-muted mt-1 text-xs">
             Stored locally in your browser. Used across all ProdLens projects.
           </div>
         </div>
@@ -115,7 +115,7 @@ export function ApiKeyCard() {
           placeholder="sk-..."
           autoComplete="off"
           spellCheck={false}
-          className="mt-2 w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300"
+          className="pl-input mt-2 w-full rounded-xl px-4 py-3 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
 
         <div className="mt-3 flex flex-wrap gap-2">

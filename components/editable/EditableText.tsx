@@ -27,7 +27,7 @@ export function EditableText({
   }, [value]);
 
   return (
-    <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+    <div className="pl-card rounded-2xl p-4 shadow-sm">
       <div className="mb-2 text-xs font-semibold text-zinc-600">{label}</div>
       {multiline ? (
         <textarea
@@ -35,7 +35,7 @@ export function EditableText({
           onChange={(e) => setDraft(e.target.value)}
           onBlur={() => onChange(draft)}
           placeholder={placeholder}
-          className="min-h-28 w-full resize-y rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300"
+          className="pl-input min-h-28 w-full resize-y rounded-xl px-3 py-2 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
       ) : (
         <input
@@ -43,7 +43,7 @@ export function EditableText({
           onChange={(e) => setDraft(e.target.value)}
           onBlur={() => onChange(draft)}
           placeholder={placeholder}
-          className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300"
+          className="pl-input w-full rounded-xl px-3 py-2 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
       )}
       <div className="mt-2 text-[11px] text-zinc-400">Click outside to save.</div>
