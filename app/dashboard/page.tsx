@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useProjects } from "@/components/ProjectsProvider";
+import { ApiKeyCard } from "@/components/settings/ApiKeyCard";
+import { ThemeToggle } from "@/components/settings/ThemeToggle";
 
 export default function DashboardPage() {
   const { hydrated, projects, create, remove } = useProjects();
@@ -23,29 +25,34 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-zinc-50">
-      <header className="border-b border-zinc-200 bg-white">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+    <div className="min-h-dvh bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
+      <header className="border-b border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-5">
           <div>
             <div className="text-sm font-semibold text-zinc-900">ProdLens</div>
             <div className="text-xs text-zinc-500">Projects dashboard</div>
           </div>
-          <Link href="/analyze" className="text-xs font-medium text-zinc-600 hover:text-zinc-900">
-            Single analysis →
-          </Link>
+          <div className="flex items-center gap-3">
+            <ThemeToggle />
+            <Link href="/analyze" className="text-xs font-medium text-zinc-600 hover:text-zinc-900">
+              Single analysis →
+            </Link>
+          </div>
         </div>
       </header>
 
       <main className="mx-auto max-w-6xl px-6 py-10">
         <div className="grid gap-6">
-          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+          <ApiKeyCard />
+
+          <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
             <div className="text-sm font-semibold text-zinc-900">Create a project</div>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
               <input
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Instagram"
-                className="w-full flex-1 rounded-xl border border-zinc-200 px-4 py-3 text-sm outline-none focus:border-zinc-300"
+                className="w-full flex-1 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none placeholder:text-zinc-400 focus:border-zinc-300"
               />
               <button
                 type="button"
@@ -72,7 +79,7 @@ export default function DashboardPage() {
                 {sorted.map((p) => (
                   <div
                     key={p.id}
-                    className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm"
+                    className="flex items-center justify-between gap-4 rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900"
                   >
                     <div>
                       <div className="text-sm font-semibold text-zinc-900">{p.workspace.product.name}</div>

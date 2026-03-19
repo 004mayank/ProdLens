@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams } from "next/navigation";
 
 import { useProjects } from "@/components/ProjectsProvider";
+import { useSettings } from "@/components/settings/SettingsProvider";
+import { ThemeToggle } from "@/components/settings/ThemeToggle";
 import type { ProdLensWorkspace } from "@/lib/schema";
 import { ensureWorkspaceIds } from "@/lib/normalize";
 import { EditableText } from "@/components/editable/EditableText";
@@ -39,7 +41,6 @@ const TABS: { key: TabKey; label: string }[] = [
   { key: "roadmap", label: "Roadmap" },
 ];
 
-const APIKEY_LS = "prodlens.openaiKey";
 
 function pill(active: boolean) {
   return (
@@ -54,25 +55,16 @@ export default function ProjectPage() {
   const params = useParams<{ id: string }>();
   const id = params?.id;
   const { hydrated, projects, getProject, save } = useProjects();
+  const { settings } = useSettings();
 
   const project = id ? getProject(id) : undefined;
   const [tab, setTab] = useState<TabKey>("strategy");
 
-  const [apiKey, setApiKey] = useState("");
   const [mode, setMode] = useState<AIMode>("generate");
   const [scope, setScope] = useState<AIScope>("full");
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
-  // Load stored key once (best-effort)
-  useEffect(() => {
-    try {
-      const savedKey = localStorage.getItem(APIKEY_LS);
-      if (savedKey) setApiKey(savedKey);
-    } catch {
-      // ignore
-    }
-  }, []);
 
   const sidebarProjects = useMemo(() => {
     return [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -109,14 +101,8 @@ export default function ProjectPage() {
     setLoading(true);
 
     try {
-      if (!apiKey.trim()) throw new Error("Add your OpenAI API key first.");
-
-      // persist key locally
-      try {
-        localStorage.setItem(APIKEY_LS, apiKey.trim());
-      } catch {
-        // ignore
-      }
+      const apiKey = settings.apiKey.trim();
+      if (!apiKey) throw new Error("Add and save your OpenAI API key on the Dashboard first.");
 
       const res = await fetch("/api/ai/generate", {
         method: "POST",
@@ -174,13 +160,18 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="min-h-dvh bg-zinc-50">
+    <div className="min-h-dvh bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50">
       <div className="flex">
         {/* Sidebar */}
-        <aside className="sticky top-0 h-dvh w-72 shrink-0 border-r border-zinc-200 bg-white">
+        <aside className="sticky top-0 h-dvh w-72 shrink-0 border-r border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-950">
           <div className="border-b border-zinc-200 px-5 py-5">
-            <div className="text-sm font-semibold text-zinc-900">ProdLens</div>
-            <div className="text-xs text-zinc-500">PM workspace</div>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <div className="text-sm font-semibold text-zinc-900">ProdLens</div>
+                <div className="text-xs text-zinc-500">PM workspace</div>
+              </div>
+              <ThemeToggle />
+            </div>
             <div className="mt-3">
               <Link href="/dashboard" className="text-xs font-semibold text-zinc-600 hover:text-zinc-900">
                 ← Dashboard
@@ -212,15 +203,11 @@ export default function ProjectPage() {
           <div className="border-t border-zinc-200 px-5 py-4">
             <div className="text-xs font-semibold text-zinc-600">AI</div>
 
-            <div className="mt-2">
-              <input
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                type="password"
-                placeholder="OpenAI API key"
-                className="w-full rounded-xl border border-zinc-200 px-3 py-2 text-xs outline-none focus:border-zinc-300"
-              />
-              <div className="mt-1 text-[11px] text-zinc-400">Stored locally. Used only for your requests.</div>
+            <div className="mt-2 rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2 text-xs text-zinc-700">
+              {settings.apiKey ? "API key: saved" : "API key: not set"}
+              <div className="mt-1 text-[11px] text-zinc-500">
+                Manage your key on the <Link className="font-semibold text-zinc-800 hover:underline" href="/dashboard">Dashboard</Link>.
+              </div>
             </div>
 
             <div className="mt-3 grid gap-2">
