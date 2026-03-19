@@ -19,7 +19,7 @@ Built for **Product Managers, Founders, and Builders**.
 
 ---
 
-## ⚡ How It Works
+## How It Works
 
 Input a product name:
 
