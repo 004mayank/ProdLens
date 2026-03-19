@@ -29,12 +29,12 @@ export default function DashboardPage() {
       <header className="pl-card sticky top-0 z-10 border-b backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-5">
           <div>
-            <div className="text-sm font-semibold text-zinc-900">ProdLens</div>
-            <div className="text-xs text-zinc-500">Projects dashboard</div>
+            <div className="text-sm font-semibold">ProdLens</div>
+            <div className="pl-muted text-xs">Projects dashboard</div>
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/analyze" className="text-xs font-medium text-zinc-600 hover:text-zinc-900">
+            <Link href="/analyze" className="pl-muted text-xs font-medium hover:opacity-90">
               Single analysis →
             </Link>
           </div>
@@ -46,7 +46,7 @@ export default function DashboardPage() {
           <ApiKeyCard />
 
           <div className="pl-card rounded-2xl p-5 shadow-sm">
-            <div className="text-sm font-semibold text-zinc-900">Create a project</div>
+            <div className="text-sm font-semibold">Create a project</div>
             <div className="mt-3 flex flex-col gap-3 sm:flex-row">
               <input
                 value={name}
@@ -62,16 +62,16 @@ export default function DashboardPage() {
                 Create
               </button>
             </div>
-            <div className="mt-2 text-xs text-zinc-500">Projects are stored locally in your browser.</div>
+            <div className="pl-muted mt-2 text-xs">Projects are stored locally in your browser.</div>
           </div>
 
           <div>
-            <div className="mb-3 text-sm font-semibold text-zinc-900">Your projects</div>
+            <div className="mb-3 text-sm font-semibold">Your projects</div>
 
             {!hydrated ? (
               <div className="text-sm text-zinc-500">Loading…</div>
             ) : sorted.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-8 text-sm text-zinc-600">
+              <div className="pl-card rounded-2xl border-dashed p-8 text-sm pl-muted">
                 No projects yet. Create one above.
               </div>
             ) : (
