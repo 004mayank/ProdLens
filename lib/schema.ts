@@ -6,21 +6,21 @@ import { z } from "zod";
  */
 
 export const MetricSchema = z.object({
-  id: z.string(),
+  id: z.string().optional().default(""),
   name: z.string(),
   description: z.string().optional().default(""),
   type: z.enum(["north_star", "input", "business"]).default("input"),
 });
 
 export const FeatureSchema = z.object({
-  id: z.string(),
+  id: z.string().optional().default(""),
   name: z.string(),
   description: z.string().optional().default(""),
   user_value: z.string().optional().default(""),
 });
 
 export const CompetitorSchema = z.object({
-  id: z.string(),
+  id: z.string().optional().default(""),
   name: z.string(),
   notes: z.string().optional().default(""),
   strengths: z.array(z.string()).default([]),
@@ -28,7 +28,7 @@ export const CompetitorSchema = z.object({
 });
 
 export const ExperimentSchema = z.object({
-  id: z.string(),
+  id: z.string().optional().default(""),
   hypothesis: z.string(),
   target_users: z.array(z.string()).default([]),
   metrics: z.array(z.string()).default([]),
@@ -36,7 +36,7 @@ export const ExperimentSchema = z.object({
 });
 
 export const RoadmapItemSchema = z.object({
-  id: z.string(),
+  id: z.string().optional().default(""),
   title: z.string(),
   description: z.string().optional().default(""),
   group: z.enum(["now", "next", "later"]).default("next"),

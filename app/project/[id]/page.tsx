@@ -6,6 +6,7 @@ import { useParams } from "next/navigation";
 
 import { useProjects } from "@/components/ProjectsProvider";
 import type { ProdLensWorkspace } from "@/lib/schema";
+import { ensureWorkspaceIds } from "@/lib/normalize";
 import { EditableText } from "@/components/editable/EditableText";
 import { EditableStringList } from "@/components/editable/EditableStringList";
 import { RoadmapEditor } from "@/components/workspace/RoadmapEditor";
@@ -99,7 +100,8 @@ export default function ProjectPage() {
   const ws = proj.workspace;
 
   function patchWorkspace(patch: Partial<ProdLensWorkspace>) {
-    save({ ...proj, workspace: { ...proj.workspace, ...patch } as ProdLensWorkspace });
+    const next = { ...proj.workspace, ...patch } as ProdLensWorkspace;
+    save({ ...proj, workspace: ensureWorkspaceIds(next) });
   }
 
   async function runAI() {

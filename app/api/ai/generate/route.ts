@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { ProdLensWorkspaceSchema } from "@/lib/schema";
+import { ensureWorkspaceIds } from "@/lib/normalize";
 import { masterPrompt, type AIMode, type AIScope } from "@/lib/ai/prompts";
 
 export const runtime = "edge";
@@ -22,6 +23,36 @@ function extractJson(text: string): unknown {
     if (!m) throw new Error("Model did not return JSON.");
     return JSON.parse(m[0]);
   }
+}
+
+function extractResponseText(json: unknown): string {
+  // Prefer output_text if present.
+  if (typeof json === "object" && json !== null && "output_text" in json) {
+    const t = (json as { output_text?: unknown }).output_text;
+    if (typeof t === "string") return t;
+  }
+
+  // Fallback: walk output[].content[].text
+  if (!(typeof json === "object" && json !== null && "output" in json)) return "";
+  const out = (json as { output?: unknown }).output;
+  if (!Array.isArray(out)) return "";
+
+  const parts: string[] = [];
+  for (const item of out) {
+    if (typeof item !== "object" || item === null) continue;
+    const content = (item as { content?: unknown }).content;
+    if (!Array.isArray(content)) continue;
+
+    for (const c of content) {
+      if (typeof c !== "object" || c === null) continue;
+      const type = (c as { type?: unknown }).type;
+      const text = (c as { text?: unknown }).text;
+      if (type === "output_text" && typeof text === "string") parts.push(text);
+      if (type === "text" && typeof text === "string") parts.push(text);
+    }
+  }
+
+  return parts.join("").trim();
 }
 
 export async function POST(req: Request) {
@@ -77,18 +108,23 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: msg }, { status: res.status });
   }
 
-  let outputText = "";
-  if (typeof json === "object" && json !== null && "output_text" in json) {
-    const t = (json as { output_text?: unknown }).output_text;
-    if (typeof t === "string") outputText = t;
-  }
+  const outputText = extractResponseText(json);
 
-  const parsed = extractJson(outputText);
+  let parsed: unknown;
+  try {
+    parsed = extractJson(outputText);
+  } catch (e: unknown) {
+    const msg =
+      typeof e === "object" && e !== null && "message" in e
+        ? String((e as { message: unknown }).message)
+        : "Failed to parse model JSON.";
+    return NextResponse.json({ error: msg, raw: outputText.slice(0, 2000) }, { status: 422 });
+  }
 
   // Validate/normalize when full workspace.
   if (scope === "full") {
     const validated = ProdLensWorkspaceSchema.parse(parsed);
-    return NextResponse.json({ data: validated });
+    return NextResponse.json({ data: ensureWorkspaceIds(validated) });
   }
 
   // Partial scopes: return as-is (client will merge).
