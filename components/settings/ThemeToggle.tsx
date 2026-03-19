@@ -12,7 +12,7 @@ export function ThemeToggle() {
   ];
 
   return (
-    <div className="pl-card inline-flex items-center gap-1 rounded-xl p-1">
+    <div className="pl-toggle inline-flex items-center gap-1 rounded-xl p-1">
       {opts.map((o) => {
         const active = settings.theme === o.v;
         return (
@@ -21,8 +21,8 @@ export function ThemeToggle() {
             type="button"
             onClick={() => setTheme(o.v)}
             className={
-              "rounded-lg px-3 py-1.5 text-xs font-semibold transition " +
-              (active ? "bg-zinc-900 text-white" : "text-zinc-700 hover:bg-zinc-50")
+              "pl-toggle-btn rounded-lg px-3 py-1.5 text-xs font-semibold transition hover:opacity-90 " +
+              (active ? "is-active" : "")
             }
           >
             {o.l}

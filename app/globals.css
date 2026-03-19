@@ -10,6 +10,8 @@
   --text: #0b1220;
   --muted: rgba(11, 18, 32, 0.62);
   --faint: rgba(11, 18, 32, 0.42);
+
+  --toggle-active-bg: rgba(11, 18, 32, 0.08);
 }
 
 @theme inline {
@@ -27,8 +29,10 @@
   --border: rgba(255, 255, 255, 0.10);
 
   --text: rgba(235, 243, 255, 0.92);
-  --muted: rgba(235, 243, 255, 0.62);
-  --faint: rgba(235, 243, 255, 0.42);
+  --muted: rgba(235, 243, 255, 0.70);
+  --faint: rgba(235, 243, 255, 0.45);
+
+  --toggle-active-bg: rgba(255, 255, 255, 0.12);
 }
 
 body {
@@ -51,3 +55,16 @@ body {
 
 .pl-muted { color: var(--muted); }
 .pl-faint { color: var(--faint); }
+
+/* Theme toggle */
+.pl-toggle {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+.pl-toggle-btn {
+  color: var(--muted);
+}
+.pl-toggle-btn.is-active {
+  background: var(--toggle-active-bg);
+  color: var(--text);
+}
