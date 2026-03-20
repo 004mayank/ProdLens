@@ -6,11 +6,13 @@ export function EditableStringList({
   title,
   items,
   placeholder,
+  disabled,
   onChange,
 }: {
   title: string;
   items: string[];
   placeholder?: string;
+  disabled?: boolean;
   onChange: (next: string[]) => void;
 }) {
   const [draft, setDraft] = useState("");
@@ -21,7 +23,11 @@ export function EditableStringList({
         <div className="text-sm font-semibold text-zinc-900">{title}</div>
         <button
           type="button"
-          onClick={() => onChange([])}
+          onClick={() => {
+            if (disabled) return;
+            onChange([]);
+          }}
+          disabled={disabled}
           className="text-xs font-semibold text-zinc-500 hover:text-zinc-900"
         >
           Clear
@@ -35,7 +41,11 @@ export function EditableStringList({
             <div className="text-sm text-zinc-800">{it}</div>
             <button
               type="button"
-              onClick={() => onChange(items.filter((_, i) => i !== idx))}
+              onClick={() => {
+                if (disabled) return;
+                onChange(items.filter((_, i) => i !== idx));
+              }}
+              disabled={disabled}
               className="text-xs font-semibold text-zinc-500 hover:text-zinc-900"
             >
               Remove
@@ -49,16 +59,19 @@ export function EditableStringList({
           value={draft}
           onChange={(e) => setDraft(e.target.value)}
           placeholder={placeholder || "Add an item…"}
+          disabled={disabled}
           className="pl-input w-full flex-1 rounded-xl px-3 py-2 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
         <button
           type="button"
           onClick={() => {
+            if (disabled) return;
             const v = draft.trim();
             if (!v) return;
             onChange([v, ...items]);
             setDraft("");
           }}
+          disabled={disabled}
           className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800"
         >
           Add

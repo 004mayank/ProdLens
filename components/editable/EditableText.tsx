@@ -7,12 +7,14 @@ export function EditableText({
   value,
   placeholder,
   multiline,
+  disabled,
   onChange,
 }: {
   label: string;
   value: string;
   placeholder?: string;
   multiline?: boolean;
+  disabled?: boolean;
   onChange: (v: string) => void;
 }) {
   const [draft, setDraft] = useState(value);
@@ -35,6 +37,7 @@ export function EditableText({
           onChange={(e) => setDraft(e.target.value)}
           onBlur={() => onChange(draft)}
           placeholder={placeholder}
+          disabled={disabled}
           className="pl-input min-h-28 w-full resize-y rounded-xl px-3 py-2 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
       ) : (
@@ -43,6 +46,7 @@ export function EditableText({
           onChange={(e) => setDraft(e.target.value)}
           onBlur={() => onChange(draft)}
           placeholder={placeholder}
+          disabled={disabled}
           className="pl-input w-full rounded-xl px-3 py-2 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
       )}

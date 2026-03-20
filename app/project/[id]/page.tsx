@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 
 import { useProjects } from "@/components/ProjectsProvider";
@@ -65,6 +65,9 @@ export default function ProjectPage() {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState<string | null>(null);
 
+  const [autoGenStrategyLoading, setAutoGenStrategyLoading] = useState(false);
+  const autoGenOnce = useRef(false);
+
 
   const sidebarProjects = useMemo(() => {
     return [...projects].sort((a, b) => b.updatedAt - a.updatedAt);
@@ -95,6 +98,64 @@ export default function ProjectPage() {
     const next = { ...proj.workspace, ...patch } as ProdLensWorkspace;
     save({ ...proj, workspace: ensureWorkspaceIds(next) });
   }
+
+  // Auto-generate Strategy once per project if it's empty (so tabs don't look like blank note-taking).
+  useEffect(() => {
+    if (autoGenOnce.current) return;
+    if (autoGenStrategyLoading) return;
+
+    const positioning = (ws.strategy.positioning || "").trim();
+    if (positioning) return;
+
+    const apiKey = settings.apiKey.trim();
+    if (!apiKey) return;
+
+    autoGenOnce.current = true;
+    setAutoGenStrategyLoading(true);
+
+    (async () => {
+      try {
+        const res = await fetch("/api/ai/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            apiKey,
+            productName: ws.product.name,
+            mode: "generate",
+            scope: "strategy",
+            current: ws,
+          }),
+        });
+
+        const json: unknown = await res.json().catch(() => null);
+        if (!res.ok) {
+          const msg =
+            typeof json === "object" && json !== null && "error" in json
+              ? String((json as { error?: unknown }).error)
+              : "AI request failed.";
+          throw new Error(msg);
+        }
+
+        const data =
+          typeof json === "object" && json !== null && "data" in json
+            ? (json as { data?: unknown }).data
+            : null;
+        if (!data) throw new Error("Empty AI response.");
+
+        const nextStrategy =
+          typeof data === "object" && data !== null && "strategy" in data
+            ? (data as { strategy?: unknown }).strategy
+            : data;
+
+        patchWorkspace({ strategy: nextStrategy as ProdLensWorkspace["strategy"] });
+      } catch {
+        // Keep UI unchanged if auto-gen fails; user can still run AI manually.
+      } finally {
+        setAutoGenStrategyLoading(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [proj.id, settings.apiKey]);
 
   async function runAI() {
     setErr(null);
@@ -436,29 +497,37 @@ export default function ProjectPage() {
 
           {tab === "strategy" && (
             <div className="grid gap-4">
+              {autoGenStrategyLoading ? (
+                <div className="text-xs font-semibold text-zinc-500">Generating strategy…</div>
+              ) : null}
+
               <EditableText
                 label="Positioning"
                 multiline
                 value={ws.strategy.positioning || ""}
                 placeholder="How do we win?"
+                disabled={autoGenStrategyLoading}
                 onChange={(v) => patchWorkspace({ strategy: { ...ws.strategy, positioning: v } })}
               />
               <EditableStringList
                 title="Strategic insights"
                 items={ws.strategy.strategic_insights}
                 placeholder="The biggest leverage is…"
+                disabled={autoGenStrategyLoading}
                 onChange={(strategic_insights) => patchWorkspace({ strategy: { ...ws.strategy, strategic_insights } })}
               />
               <EditableStringList
                 title="What to build"
                 items={ws.strategy.what_to_build}
                 placeholder="Build X because…"
+                disabled={autoGenStrategyLoading}
                 onChange={(what_to_build) => patchWorkspace({ strategy: { ...ws.strategy, what_to_build } })}
               />
               <EditableStringList
                 title="Key risks"
                 items={ws.strategy.key_risks}
                 placeholder="Risk: creator supply stalls…"
+                disabled={autoGenStrategyLoading}
                 onChange={(key_risks) => patchWorkspace({ strategy: { ...ws.strategy, key_risks } })}
               />
             </div>

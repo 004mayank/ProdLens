@@ -34,9 +34,6 @@ export default function DashboardPage() {
           </div>
           <div className="flex items-center gap-3">
             <ThemeToggle />
-            <Link href="/analyze" className="pl-muted text-xs font-medium hover:opacity-90">
-              Single analysis →
-            </Link>
           </div>
         </div>
       </header>
