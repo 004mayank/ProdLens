@@ -30,7 +30,7 @@ export function EditableText({
 
   return (
     <div className="pl-card rounded-2xl p-4 shadow-sm">
-      <div className="mb-2 text-xs font-semibold text-zinc-600">{label}</div>
+      <div className="mb-2 text-xs font-semibold text-zinc-600 dark:text-zinc-300">{label}</div>
       {multiline ? (
         <textarea
           value={draft}
@@ -50,7 +50,7 @@ export function EditableText({
           className="pl-input w-full rounded-xl px-3 py-2 text-sm outline-none placeholder:opacity-70 focus:ring-2 focus:ring-blue-500/30"
         />
       )}
-      <div className="mt-2 text-[11px] text-zinc-400">Click outside to save.</div>
+      <div className="mt-2 text-[11px] text-zinc-400 dark:text-zinc-500">Click outside to save.</div>
     </div>
   );
 }

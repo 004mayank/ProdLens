@@ -20,7 +20,7 @@ export function EditableStringList({
   return (
     <div className="pl-card rounded-2xl p-4 shadow-sm">
       <div className="mb-3 flex items-center justify-between">
-        <div className="text-sm font-semibold text-zinc-900">{title}</div>
+        <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">{title}</div>
         <button
           type="button"
           onClick={() => {
@@ -28,17 +28,19 @@ export function EditableStringList({
             onChange([]);
           }}
           disabled={disabled}
-          className="text-xs font-semibold text-zinc-500 hover:text-zinc-900"
+          className="text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
         >
           Clear
         </button>
       </div>
 
       <div className="space-y-2">
-        {items.length === 0 ? <div className="text-sm text-zinc-500">No items.</div> : null}
+        {items.length === 0 ? (
+          <div className="text-sm text-zinc-500 dark:text-zinc-400">No items.</div>
+        ) : null}
         {items.map((it, idx) => (
           <div key={idx} className="flex items-start justify-between gap-3 rounded-xl border px-3 py-2" style={{ borderColor: "var(--border)" }}>
-            <div className="text-sm text-zinc-800">{it}</div>
+            <div className="text-sm text-zinc-800 dark:text-zinc-100">{it}</div>
             <button
               type="button"
               onClick={() => {
@@ -46,7 +48,7 @@ export function EditableStringList({
                 onChange(items.filter((_, i) => i !== idx));
               }}
               disabled={disabled}
-              className="text-xs font-semibold text-zinc-500 hover:text-zinc-900"
+              className="text-xs font-semibold text-zinc-500 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-zinc-100"
             >
               Remove
             </button>
