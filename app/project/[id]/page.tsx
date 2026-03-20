@@ -115,15 +115,12 @@ export default function ProjectPage() {
 
     (async () => {
       try {
-        const res = await fetch("/api/ai/generate", {
+        const res = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
+            product_name: ws.product.name,
             apiKey,
-            productName: ws.product.name,
-            mode: "generate",
-            scope: "strategy",
-            current: ws,
           }),
         });
 
@@ -136,20 +133,30 @@ export default function ProjectPage() {
           throw new Error(msg);
         }
 
-        const data =
-          typeof json === "object" && json !== null && "data" in json
-            ? (json as { data?: unknown }).data
+        const strategy =
+          typeof json === "object" && json !== null && "strategy" in json
+            ? (json as { strategy?: unknown }).strategy
             : null;
-        if (!data) throw new Error("Empty AI response.");
 
-        const nextStrategy =
-          typeof data === "object" && data !== null && "strategy" in data
-            ? (data as { strategy?: unknown }).strategy
-            : data;
+        if (!strategy || typeof strategy !== "object") throw new Error("Empty strategy response.");
 
-        patchWorkspace({ strategy: nextStrategy as ProdLensWorkspace["strategy"] });
-      } catch {
+        const positioning = String((strategy as any).positioning || "");
+        const insights = Array.isArray((strategy as any).insights) ? (strategy as any).insights.map(String) : [];
+        const bets = Array.isArray((strategy as any).bets) ? (strategy as any).bets.map(String) : [];
+        const risks = Array.isArray((strategy as any).risks) ? (strategy as any).risks.map(String) : [];
+
+        patchWorkspace({
+          strategy: {
+            ...ws.strategy,
+            positioning,
+            strategic_insights: insights,
+            what_to_build: bets,
+            key_risks: risks,
+          },
+        });
+      } catch (e) {
         // Keep UI unchanged if auto-gen fails; user can still run AI manually.
+        if (process.env.NODE_ENV !== "production") console.error(e);
       } finally {
         setAutoGenStrategyLoading(false);
       }
