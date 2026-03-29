@@ -1,4 +1,4 @@
-# ProdLens — Product Management Suite (local-first)
+# ProdLens - Product Management Suite (local-first)
 
 ProdLens is a **stateful, production-minded PM workspace**.
 
@@ -86,9 +86,9 @@ Route:
 
 ## Routes
 
-- `/dashboard` — Projects list + create
-- `/project/[id]` — Stateful PM workspace
-- `/analyze` — One-off analysis (legacy-style)
+- `/dashboard` - Projects list + create
+- `/project/[id]` - Stateful PM workspace
+- `/analyze` - One-off analysis (legacy-style)
 
 ---
 
